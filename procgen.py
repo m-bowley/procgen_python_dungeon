@@ -1,4 +1,5 @@
-import random
+import secrets
+import math
 
 WIDTH = 1000
 HEIGHT = 700
@@ -6,19 +7,29 @@ HEIGHT = 700
 ROOM_COLOUR = (150, 150, 150)
 MAX_ROOM_SIZE = 200
 MIN_ROOM_SIZE = 75
+ROOM_PADDING = 50
 
-NUMBER_OF_ROOMS = 10
+MAP_BORDER = 75
+
+NUMBER_OF_ROOMS = 7
+
+CORRIDOR_WIDTH = 50
 
 class Room():
     def __init__(self, width, height, pos_x, pos_y):
         self.image = Rect((pos_x, pos_y), (width, height))
+        self.NORTH = None
+        self.SOUTH = None
+        self.EAST = None
+        self.WEST = None
+        self.connections = 0
 
 def generate_room():
-    rm_width = MIN_ROOM_SIZE + random.randint(0, MAX_ROOM_SIZE - MIN_ROOM_SIZE + 1)
-    rm_height = MIN_ROOM_SIZE + random.randint(0, MAX_ROOM_SIZE - MIN_ROOM_SIZE + 1)
+    rm_width = MIN_ROOM_SIZE + secrets.randbelow(MAX_ROOM_SIZE - MIN_ROOM_SIZE + 1)
+    rm_height = MIN_ROOM_SIZE + secrets.randbelow(MAX_ROOM_SIZE - MIN_ROOM_SIZE + 1)
 
-    rm_pos_x = random.randint(0, WIDTH - rm_width)
-    rm_pos_y = random.randint(0, HEIGHT - rm_height)
+    rm_pos_x = secrets.randbelow(WIDTH - rm_width - MAP_BORDER)
+    rm_pos_y = secrets.randbelow(HEIGHT - rm_height - MAP_BORDER)
 
     return Room(rm_width, rm_height, rm_pos_x, rm_pos_y)
 
@@ -31,11 +42,51 @@ for i in range(NUMBER_OF_ROOMS):
         intersect = False
         pos = len(Map) - 1
         while (not intersect) and pos >= 0:
-            if(Map[pos].image.colliderect(rm.image)):
+            padded_width = rm.image.width + ROOM_PADDING
+            padded_height = rm.image.height + ROOM_PADDING
+            padded_room = Rect((rm.image.x, rm.image.y), (padded_width, padded_height))
+            padded_room.center = rm.image.center
+            if(Map[pos].image.colliderect(padded_room)):
                 intersect = True
             pos -= 1
 
     Map.append(rm)
+
+position1 = Map[0].image.center
+position2 = Map[1].image.center
+
+diff = [position1[0] - position2[0], position1[1] - position2[1]]
+
+up = True
+across = True
+
+if abs(diff[0]) < Map[0].image.width/2 or abs(diff[0]) < Map[1].image.width/2:
+    across = False
+
+if abs(diff[1]) < Map[0].image.height/2 or abs(diff[1]) < Map[1].image.height/2:
+    up = False
+
+if up:
+    hall_pos = [position1[0], position1[1] + (diff[1]/2)]
+
+    if not across:
+        hall_pos[0] += (diff[0] / 2)
+
+    hall = Room(CORRIDOR_WIDTH, abs(diff[1]), 0, 0)
+    hall.image.center = hall_pos
+
+    Map.append(hall)
+
+if across:
+    hall_pos = [position2[0] - (diff[0]/2), position2[1]]
+
+    if not up:
+        hall_pos[1] += (diff[1] / 2)
+
+    hall = Room(abs(diff[0]), CORRIDOR_WIDTH, 0, 0)
+    hall.image.center = hall_pos
+
+    Map.append(hall)
 
 def draw():
     screen.fill((0, 0, 0))
