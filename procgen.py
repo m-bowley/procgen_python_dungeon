@@ -52,41 +52,30 @@ for i in range(NUMBER_OF_ROOMS):
 
     Map.append(rm)
 
-position1 = Map[0].image.center
-position2 = Map[1].image.center
+for rm in Map:
+    options = ['N', 'S', 'E', 'W']
+    connections = secrets.randbelow(5)
+    count = 0
+    if rm.NORTH != None:
+        count += 1
+        options.remove('N')
+    if rm.SOUTH != None:
+        count += 1
+        options.remove('S')  
+    if rm.EAST != None:
+        count += 1
+        options.remove('E')
+    if rm.WEST != None:
+        count += 1
+        options.remove('W')
 
-diff = [position1[0] - position2[0], position1[1] - position2[1]]
+    connections -= count
 
-up = True
-across = True
+    if connections > 0:
+        dir = secrets.choice(options)
+        if dir = 'N':
+            
 
-if abs(diff[0]) < Map[0].image.width/2 or abs(diff[0]) < Map[1].image.width/2:
-    across = False
-
-if abs(diff[1]) < Map[0].image.height/2 or abs(diff[1]) < Map[1].image.height/2:
-    up = False
-
-if up:
-    hall_pos = [position1[0], position1[1] + (diff[1]/2)]
-
-    if not across:
-        hall_pos[0] += (diff[0] / 2)
-
-    hall = Room(CORRIDOR_WIDTH, abs(diff[1]), 0, 0)
-    hall.image.center = hall_pos
-
-    Map.append(hall)
-
-if across:
-    hall_pos = [position2[0] - (diff[0]/2), position2[1]]
-
-    if not up:
-        hall_pos[1] += (diff[1] / 2)
-
-    hall = Room(abs(diff[0]), CORRIDOR_WIDTH, 0, 0)
-    hall.image.center = hall_pos
-
-    Map.append(hall)
 
 def draw():
     screen.fill((0, 0, 0))
