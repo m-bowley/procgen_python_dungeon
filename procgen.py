@@ -33,6 +33,21 @@ def generate_room():
 
     return Room(rm_width, rm_height, rm_pos_x, rm_pos_y)
 
+def generate_hall(rm_1, rm_2, direction):
+    diff = [(rm_1.image.x - rm_2.image.x, (rm_1.image.y - rm_2.image.y))]
+
+    up = True
+    across = True
+
+    if (abs(diff[0]) < (rm_1.image.width/2)) or abs(diff[0]) < (rm_2.image.width/2):
+        across = False
+    if (abs(diff[1]) < (rm_1.image.height/2)) or abs(diff[1]) < (rm_2.image.height/2):
+        up = False
+    
+    if up:
+
+
+
 Map = []
 for i in range(NUMBER_OF_ROOMS):
 
@@ -73,7 +88,40 @@ for rm in Map:
 
     if connections > 0:
         dir = secrets.choice(options)
-        if dir = 'N':
+        connector = None
+        conn_value = 10000000
+        if dir == 'N':
+            for room in Map:
+                if rm != room and room.image.y < rm.image.y:
+                    diff = [rm.image.x - room.image.x, rm.image.y - room.image.y]
+                    magnitude = math.sqrt(diff[0]**2 + diff[1]**2)
+                    if magnitude < conn_value:
+                        connector = room
+                        conn_value = magnitude
+        elif dir == 'S':
+            for room in Map:
+                if rm != room and room.image.y > rm.image.y:
+                    diff = [rm.image.x - room.image.x, rm.image.y - room.image.y]
+                    magnitude = math.sqrt(diff[0]**2 + diff[1]**2)
+                    if magnitude < conn_value:
+                        connector = room
+                        conn_value = magnitude
+        elif dir == 'E':
+            for room in Map:
+                if rm != room and room.image.x > rm.image.x:
+                    diff = [rm.image.x - room.image.x, rm.image.y - room.image.y]
+                    magnitude = math.sqrt(diff[0]**2 + diff[1]**2)
+                    if magnitude < conn_value:
+                        connector = room
+                        conn_value = magnitude
+        elif dir == 'E':
+            for room in Map:
+                if rm != room and room.image.x > rm.image.x:
+                    diff = [rm.image.x - room.image.x, rm.image.y - room.image.y]
+                    magnitude = math.sqrt(diff[0]**2 + diff[1]**2)
+                    if magnitude < conn_value:
+                        connector = room
+                        conn_value = magnitude
             
 
 
