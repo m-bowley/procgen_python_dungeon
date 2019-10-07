@@ -37,18 +37,16 @@ class Room():
         self.height = height
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.x = int(pos_x + (width/2)) # Center x pos
-        self.y = int(pos_y + (height/2)) # Center y pos
         self.connections = {"NORTH": None, "SOUTH": None, "EAST": None, "WEST": None}
 
 def generate_room():
     rm_width = MIN_ROOM_SIZE + secrets.randbelow(MAX_ROOM_SIZE - MIN_ROOM_SIZE + 1)
     rm_height = MIN_ROOM_SIZE + secrets.randbelow(MAX_ROOM_SIZE - MIN_ROOM_SIZE + 1)
 
-    rm_pos_x = secrets.randbelow(TILE_ACROSS - rm_width - MAP_BORDER)
+    rm_pos_x = secrets.randbelow(TILE_ACROSS - rm_width)
     if rm_pos_x < MAP_BORDER:
         rm_pos_x = MAP_BORDER
-    rm_pos_y = secrets.randbelow(TILE_DOWN - rm_height - MAP_BORDER)
+    rm_pos_y = secrets.randbelow(TILE_DOWN - rm_height)
     if rm_pos_y < MAP_BORDER:
         rm_pos_y = MAP_BORDER
 
